@@ -630,11 +630,6 @@
                   </div>
 
                   <div class="field">
-                    <label>&nbsp;</label>
-                    <button class="btn btn-dark" type="button" id="checkCpfBtn">Consultar CPF</button>
-                  </div>
-
-                  <div class="field">
                     <label for="rg">RG</label>
                     <input id="rg" name="rg" type="text" />
                     <small class="error" data-error-for="rg"></small>
@@ -911,7 +906,8 @@
         certidoes_negativas: null,
       },
       existingRegistration: null,
-      cpfWasChecked: "",
+      cpfLookupTimer: null,
+      cpfLookupValue: "",
       sending: false,
       lastReceipt: null
     };
@@ -945,7 +941,6 @@
 
       if (!isPeriodOpen()) {
         submitBtn.disabled = true;
-        el("checkCpfBtn").disabled = true;
         periodNotice.className = "notice error";
         periodNotice.innerHTML = "As inscrições estão fora do período permitido.";
       }
@@ -1150,11 +1145,6 @@
         hasError = true;
       }
 
-      if (state.cpfWasChecked !== data.cpf) {
-        setFieldError("cpf", "Consulte o CPF antes de enviar.");
-        hasError = true;
-      }
-
       const fileKeys = Object.keys(state.files);
       for (const key of fileKeys) {
         const validationMessage = validateFile(key, state.files[key]);
@@ -1352,7 +1342,7 @@
 
       const draft = {
         formData: data,
-        cpfWasChecked: state.cpfWasChecked,
+        cpfLookupValue: state.cpfLookupValue,
         savedAt: new Date().toISOString()
       };
 
@@ -1395,7 +1385,7 @@
         el("declaraCienciaEdital").checked = !!data.declaraCienciaEdital;
         el("aceitaLgpd").checked = !!data.aceitaLgpd;
 
-        state.cpfWasChecked = draft.cpfWasChecked || "";
+        state.cpfLookupValue = draft.cpfLookupValue || "";
 
         const savedFiles = await getDbValue(`${DRAFT_KEY}_files`);
         if (savedFiles) {
@@ -1491,24 +1481,16 @@
       }
     }
 
-    async function checkCpf() {
-      clearErrors();
+    async function lookupCpf(showLookupError = false) {
       hideExistingRegistration();
 
-      if (!isPeriodOpen()) {
-        setGlobalError("As inscrições estão fora do período permitido.");
-        return;
-      }
+      if (!isPeriodOpen()) return;
 
       const cpf = onlyDigits(el("cpf").value);
       if (cpf.length !== 11) {
-        setFieldError("cpf", "Informe um CPF válido para consulta.");
+        state.cpfLookupValue = "";
         return;
       }
-
-      const btn = el("checkCpfBtn");
-      btn.disabled = true;
-      btn.textContent = "Consultando...";
 
       try {
         const url = TEST_MODE
@@ -1522,17 +1504,27 @@
           throw new Error(data.error || "Falha ao consultar CPF.");
         }
 
-        state.cpfWasChecked = cpf;
+        state.cpfLookupValue = cpf;
 
         if (data.exists && data.existingRegistration) {
           showExistingRegistration(data.existingRegistration);
         }
       } catch (err) {
-        setFieldError("cpf", err.message || "Erro ao consultar CPF.");
-      } finally {
-        btn.disabled = !isPeriodOpen();
-        btn.textContent = "Consultar CPF";
+        state.cpfLookupValue = "";
+        if (showLookupError) {
+          setFieldError("cpf", err.message || "Erro ao consultar CPF.");
+        }
       }
+    }
+
+    function scheduleCpfLookup() {
+      if (state.cpfLookupTimer) {
+        clearTimeout(state.cpfLookupTimer);
+      }
+
+      state.cpfLookupTimer = setTimeout(() => {
+        lookupCpf(false);
+      }, 450);
     }
 
     function resetFormVisual() {
@@ -1540,7 +1532,7 @@
       el("idadeDeclarada").value = "";
       clearErrors();
       hideExistingRegistration();
-      state.cpfWasChecked = "";
+      state.cpfLookupValue = "";
       Object.keys(state.files).forEach((key) => {
         state.files[key] = null;
         updateFileUI(key, null);
@@ -1562,9 +1554,14 @@
 
     el("cpf").addEventListener("input", async (e) => {
       e.target.value = maskCpf(e.target.value);
-      state.cpfWasChecked = "";
+      state.cpfLookupValue = "";
       hideExistingRegistration();
+      scheduleCpfLookup();
       await saveDraft(false);
+    });
+
+    el("cpf").addEventListener("blur", async () => {
+      await lookupCpf(true);
     });
 
     el("telefone").addEventListener("input", async (e) => {
@@ -1609,7 +1606,6 @@
       });
     });
 
-    el("checkCpfBtn").addEventListener("click", checkCpf);
     el("saveDraftBtn").addEventListener("click", async () => {
       await saveDraft(true);
     });
