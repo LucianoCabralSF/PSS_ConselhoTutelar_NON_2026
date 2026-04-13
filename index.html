@@ -677,6 +677,16 @@
                     <small class="error" data-error-for="nomeCompleto"></small>
                   </div>
 
+                  <div class="upload-card" style="grid-column: 1 / -1;">
+                    <div class="field">
+                      <label for="file_selfie">Selfie obrigatória (JPG ou PNG)</label>
+                      <input id="file_selfie" type="file" accept=".jpg,.jpeg,.png" capture="user" />
+                      <div class="progress"><div id="progress_selfie"></div></div>
+                      <div class="muted" id="name_selfie"></div>
+                      <small class="error" data-error-for="selfie_file"></small>
+                    </div>
+                  </div>
+
                   <div class="field">
                     <label for="cpf">CPF</label>
                     <input id="cpf" name="cpf" type="text" maxlength="14" />
@@ -814,20 +824,10 @@
               <div class="section upload-section" id="uploadSection">
                 <div class="split-head">
                   <h3 style="margin:0;">Documentos obrigatórios</h3>
-                  <span class="badge"><span id="selectedFilesCount">0</span>/6 enviados</span>
+                  <span class="badge"><span id="selectedFilesCount">0</span>/5 enviados</span>
                 </div>
 
                 <div class="grid grid-2">
-                  <div class="upload-card">
-                    <div class="field">
-                      <label for="file_selfie">Selfie atual</label>
-                      <input id="file_selfie" type="file" accept=".jpg,.jpeg,.png" capture="user" />
-                      <div class="progress"><div id="progress_selfie"></div></div>
-                      <div class="muted" id="name_selfie"></div>
-                      <small class="error" data-error-for="selfie_file"></small>
-                    </div>
-                  </div>
-
                   <div class="upload-card">
                     <div class="field">
                       <label for="file_rg">Documento de RG</label>
@@ -916,7 +916,6 @@
 
               <div class="actions">
                 <button class="btn btn-primary" type="submit" id="submitBtn">Enviar inscrição</button>
-                <button class="btn btn-light" type="button" id="saveDraftBtn">Salvar rascunho</button>
                 <button class="btn btn-light" type="button" id="resetBtn">Limpar</button>
               </div>
 
@@ -1040,6 +1039,9 @@
       }
       globalError.classList.remove("hidden");
       globalError.textContent = message;
+      setTimeout(() => {
+        globalError.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
     }
 
     function setDraftNotice(message) {
@@ -1115,10 +1117,12 @@
 
     function updateSelectedFilesCount() {
       if (state.documentDeliveryOption === "physical") {
-        selectedFilesCount.textContent = state.files.selfie ? "1" : "0";
+        selectedFilesCount.textContent = "dispensado";
         return;
       }
-      const total = Object.values(state.files).filter(Boolean).length;
+      const total = Object.entries(state.files)
+        .filter(([key, file]) => key !== "selfie" && !!file)
+        .length;
       selectedFilesCount.textContent = String(total);
     }
 
@@ -1246,7 +1250,13 @@
       }
 
       if (data.documentDeliveryOption === "upload") {
-        const fileKeys = Object.keys(state.files);
+        const selfieValidationMessage = validateFile("selfie", state.files.selfie);
+        if (selfieValidationMessage) {
+          setFieldError("selfie_file", selfieValidationMessage);
+          hasError = true;
+        }
+
+        const fileKeys = Object.keys(state.files).filter((key) => key !== "selfie");
         for (const key of fileKeys) {
           const validationMessage = validateFile(key, state.files[key]);
           if (validationMessage) {
@@ -1707,11 +1717,9 @@
 
       Object.entries(fileMap).forEach(([field, inputId]) => {
         const input = el(inputId);
-        input.disabled = state.documentDeliveryOption === "physical" && field !== "selfie";
+        input.disabled = state.documentDeliveryOption === "physical";
 
-        if (state.documentDeliveryOption === "physical") {
-          setFieldError(`${field}_file`, field === "selfie" ? validateFile("selfie", state.files.selfie) : "");
-        }
+        setFieldError(`${field}_file`, state.documentDeliveryOption === "physical" ? "" : validateFile(field, state.files[field]));
       });
 
       updateSelectedFilesCount();
@@ -1738,7 +1746,6 @@
     }
 
     const fileMap = {
-      selfie: "file_selfie",
       rg: "file_rg",
       cpf: "file_cpf",
       comprovante_residencia: "file_comprovante_residencia",
@@ -1765,6 +1772,14 @@
 
     el("dataNascimento").addEventListener("change", async (e) => {
       el("idadeDeclarada").value = calculateAge(e.target.value);
+      await saveDraft(false);
+    });
+
+    el("file_selfie").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0] || null;
+      state.files.selfie = file;
+      updateFileUI("selfie", file);
+      setFieldError("selfie_file", file ? validateFile("selfie", file) : "Documento obrigatório.");
       await saveDraft(false);
     });
 
@@ -1803,9 +1818,6 @@
       });
     });
 
-    el("saveDraftBtn").addEventListener("click", async () => {
-      await saveDraft(true);
-    });
     el("resetBtn").addEventListener("click", async () => {
       await resetForm();
     });
