@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PSS Conselho Tutelar 2026 - CMDCA Nova Olinda do Norte</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg: #f4f7fb;
@@ -59,7 +60,7 @@
 
     .brand-row {
       display: grid;
-      grid-template-columns: 110px 1fr 110px;
+      grid-template-columns: 110px 1fr;
       align-items: center;
       gap: 18px;
     }
@@ -238,7 +239,7 @@
       background: #fbfdff;
       min-height: 53px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .checkbox-box label {
@@ -255,6 +256,7 @@
     .checkbox-box input[type="checkbox"] {
       margin-top: 3px;
       transform: scale(1.1);
+      flex: 0 0 auto;
     }
 
     .upload-card {
@@ -472,6 +474,12 @@
       text-align: center;
     }
 
+    ul.cert-list {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      line-height: 1.7;
+    }
+
     @media (max-width: 980px) {
       .brand-row {
         grid-template-columns: 1fr;
@@ -517,6 +525,7 @@
             <div class="brand-row">
               <div class="logo-stack">
                 <img src="./Bandeira de NON.png" alt="Bandeira de Nova Olinda do Norte" class="logo-side" />
+                <img src="./Logo CMDCA.png" alt="Logo do CMDCA" class="logo-main" />
               </div>
 
               <div class="header-text">
@@ -528,11 +537,6 @@
                   Processo Simplificado de Recomposição de Suplentes do Conselho Tutelar – Inscrição On-line 2026
                 </div>
               </div>
-
-              <div class="logo-stack">
-                <img src="./Logo CMDCA.png" alt="Logo do CMDCA" class="logo-main" />
-                <img src="./Brasao de NON.png" alt="Brasão de Nova Olinda do Norte" class="logo-side" />
-              </div>
             </div>
           </div>
 
@@ -541,6 +545,7 @@
               Cada candidato pode manter apenas <strong>uma inscrição ativa</strong>. Caso já exista uma inscrição vinculada ao CPF informado, uma nova inscrição somente será aceita mediante confirmação de substituição da anterior.
             </div>
 
+            <div class="notice ok hidden" id="draftNotice"></div>
             <div class="notice error hidden" id="globalError"></div>
 
             <form id="inscricaoForm">
@@ -665,9 +670,23 @@
               </div>
 
               <div class="section">
+                <h3>Certidões negativas exigidas</h3>
+                <div class="notice warn" style="margin-bottom:0;">
+                  O arquivo enviado em <strong>Certidões negativas</strong> pode ser um único PDF reunindo todas as certidões, ou documento equivalente organizado pelo candidato.
+                  <ul class="cert-list">
+                    <li>Certidão negativa cível da Justiça Estadual</li>
+                    <li>Certidão negativa criminal da Justiça Estadual</li>
+                    <li>Certidão negativa criminal da Justiça Federal</li>
+                    <li>Certidão de quitação eleitoral</li>
+                    <li>Certidão de crimes eleitorais, quando aplicável</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="section">
                 <div class="split-head">
                   <h3 style="margin:0;">Documentos obrigatórios</h3>
-                  <span class="badge"><span id="selectedFilesCount">0</span>/7 enviados</span>
+                  <span class="badge"><span id="selectedFilesCount">0</span>/5 enviados</span>
                 </div>
 
                 <div class="grid grid-2">
@@ -720,26 +739,6 @@
                       <small class="error" data-error-for="certidoes_negativas_file"></small>
                     </div>
                   </div>
-
-                  <div class="upload-card">
-                    <div class="field">
-                      <label for="file_termo_disponibilidade">Termo de disponibilidade</label>
-                      <input id="file_termo_disponibilidade" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-                      <div class="progress"><div id="progress_termo_disponibilidade"></div></div>
-                      <div class="muted" id="name_termo_disponibilidade"></div>
-                      <small class="error" data-error-for="termo_disponibilidade_file"></small>
-                    </div>
-                  </div>
-
-                  <div class="upload-card">
-                    <div class="field">
-                      <label for="file_declaracao_nova_manifestacao">Declaração de nova manifestação de interesse</label>
-                      <input id="file_declaracao_nova_manifestacao" type="file" accept=".pdf,.jpg,.jpeg,.png" />
-                      <div class="progress"><div id="progress_declaracao_nova_manifestacao"></div></div>
-                      <div class="muted" id="name_declaracao_nova_manifestacao"></div>
-                      <small class="error" data-error-for="declaracao_nova_manifestacao_file"></small>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -749,7 +748,14 @@
                 <div class="checkbox-box" style="margin-bottom:12px;">
                   <label>
                     <input id="declaraDisponibilidade" name="declaraDisponibilidade" type="checkbox" />
-                    Declaro que possuo disponibilidade para o exercício da função, conforme as regras do procedimento.
+                    Declaro, para fins de participação no Chamamento Público Simplificado nº ___/2026 do CMDCA, que possuo plena disponibilidade para o exercício da função de Conselheiro Tutelar suplente, inclusive para cumprimento da jornada de 30 horas semanais, atuação em regime de dedicação exclusiva, participação em plantões, sobreavisos, atendimentos emergenciais, reuniões, capacitações e demais atividades inerentes à função.
+                  </label>
+                </div>
+
+                <div class="checkbox-box" style="margin-bottom:12px;">
+                  <label>
+                    <input id="declaraNovaManifestacao" name="declaraNovaManifestacao" type="checkbox" />
+                    Declaro minha nova manifestação expressa de interesse para integrar o cadastro de suplentes do Conselho Tutelar, de forma livre e voluntária, ciente de que esta participação não configura recondução automática à suplência anterior, sujeitando-me integralmente às regras do procedimento instituído pelo CMDCA.
                   </label>
                 </div>
 
@@ -772,11 +778,12 @@
 
               <div class="actions">
                 <button class="btn btn-primary" type="submit" id="submitBtn">Enviar inscrição</button>
+                <button class="btn btn-light" type="button" id="saveDraftBtn">Salvar rascunho</button>
                 <button class="btn btn-light" type="button" id="resetBtn">Limpar</button>
               </div>
 
               <div class="footer-note">
-                Para melhor compatibilidade, envie os documentos em PDF, JPG ou PNG, com tamanho máximo de 10 MB por arquivo.
+                Os dados e arquivos preenchidos ficam salvos como rascunho no próprio navegador para que você possa continuar depois no mesmo dispositivo.
               </div>
             </form>
           </div>
@@ -794,7 +801,8 @@
             </div>
 
             <div class="actions" style="justify-content:center; margin-top:24px;">
-              <button class="btn btn-primary" type="button" id="newSubmissionBtn">Nova consulta</button>
+              <button class="btn btn-primary" type="button" id="downloadReceiptBtn">Baixar comprovante</button>
+              <button class="btn btn-light" type="button" id="newSubmissionBtn">Nova consulta</button>
             </div>
           </div>
         </div>
@@ -826,6 +834,12 @@
     const ACCEPTED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
     const INSCRIPTION_START = new Date("2026-04-20T00:00:00-03:00");
     const INSCRIPTION_END = new Date("2026-04-24T23:59:59-03:00");
+    const TEST_MODE = new URLSearchParams(window.location.search).get("modo_teste") === "1"
+      || new URLSearchParams(window.location.search).get("teste") === "1";
+
+    const DRAFT_KEY = "pss_ct_2026_draft_v2";
+    const DB_NAME = "pss_ct_2026_db";
+    const DB_STORE = "draft_files";
 
     const state = {
       files: {
@@ -834,12 +848,11 @@
         comprovante_residencia: null,
         certificado_escolaridade: null,
         certidoes_negativas: null,
-        termo_disponibilidade: null,
-        declaracao_nova_manifestacao: null,
       },
       existingRegistration: null,
       cpfWasChecked: "",
-      sending: false
+      sending: false,
+      lastReceipt: null
     };
 
     const el = (id) => document.getElementById(id);
@@ -854,13 +867,21 @@
     const selectedFilesCount = el("selectedFilesCount");
     const submitBtn = el("submitBtn");
     const periodNotice = el("periodNotice");
+    const draftNotice = el("draftNotice");
 
     function isPeriodOpen() {
+      if (TEST_MODE) return true;
       const now = new Date();
       return now >= INSCRIPTION_START && now <= INSCRIPTION_END;
     }
 
     function applyPeriodState() {
+      if (TEST_MODE) {
+        periodNotice.className = "notice ok";
+        periodNotice.innerHTML = "Modo de teste ativado. O sistema está liberado fora do período oficial apenas para validação.";
+        return;
+      }
+
       if (!isPeriodOpen()) {
         submitBtn.disabled = true;
         el("checkCpfBtn").disabled = true;
@@ -877,6 +898,16 @@
       }
       globalError.classList.remove("hidden");
       globalError.textContent = message;
+    }
+
+    function setDraftNotice(message) {
+      if (!message) {
+        draftNotice.classList.add("hidden");
+        draftNotice.textContent = "";
+        return;
+      }
+      draftNotice.classList.remove("hidden");
+      draftNotice.textContent = message;
     }
 
     function clearErrors() {
@@ -990,46 +1021,6 @@
       existingBox.innerHTML = "";
     }
 
-    async function checkCpf() {
-      clearErrors();
-      hideExistingRegistration();
-
-      if (!isPeriodOpen()) {
-        setGlobalError("As inscrições estão fora do período permitido.");
-        return;
-      }
-
-      const cpf = onlyDigits(el("cpf").value);
-      if (cpf.length !== 11) {
-        setFieldError("cpf", "Informe um CPF válido para consulta.");
-        return;
-      }
-
-      const btn = el("checkCpfBtn");
-      btn.disabled = true;
-      btn.textContent = "Consultando...";
-
-      try {
-        const res = await fetch(`${API_URL}?action=checkCpf&cpf=${encodeURIComponent(cpf)}`);
-        const data = await res.json();
-
-        if (!data.ok) {
-          throw new Error(data.error || "Falha ao consultar CPF.");
-        }
-
-        state.cpfWasChecked = cpf;
-
-        if (data.exists && data.existingRegistration) {
-          showExistingRegistration(data.existingRegistration);
-        }
-      } catch (err) {
-        setFieldError("cpf", err.message || "Erro ao consultar CPF.");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Consultar CPF";
-      }
-    }
-
     function collectFormData() {
       return {
         nomeCompleto: el("nomeCompleto").value.trim(),
@@ -1048,9 +1039,11 @@
         classificacaoAnterior: el("classificacaoAnterior").value.trim(),
         situacaoSuplenciaAnterior: el("situacaoSuplenciaAnterior").value,
         declaraDisponibilidade: el("declaraDisponibilidade").checked,
+        declaraNovaManifestacao: el("declaraNovaManifestacao").checked,
         declaraCienciaEdital: el("declaraCienciaEdital").checked,
         aceitaLgpd: el("aceitaLgpd").checked,
-        observacoes: el("observacoes").value.trim()
+        observacoes: el("observacoes").value.trim(),
+        modoTeste: TEST_MODE
       };
     }
 
@@ -1077,7 +1070,12 @@
       if (!data.escolaridade) { setFieldError("escolaridade", "Campo obrigatório."); hasError = true; }
 
       if (!data.declaraDisponibilidade) {
-        setGlobalError("Aceite a declaração de disponibilidade.");
+        setGlobalError("Aceite o termo de disponibilidade.");
+        hasError = true;
+      }
+
+      if (!data.declaraNovaManifestacao) {
+        setGlobalError("Aceite a declaração de nova manifestação.");
         hasError = true;
       }
 
@@ -1122,6 +1120,97 @@
       return result;
     }
 
+    function formatYesNo(value) {
+      return value ? "SIM" : "NÃO";
+    }
+
+    function getUploadedFileSummary() {
+      return {
+        rg: state.files.rg ? state.files.rg.name : "-",
+        cpf: state.files.cpf ? state.files.cpf.name : "-",
+        comprovante_residencia: state.files.comprovante_residencia ? state.files.comprovante_residencia.name : "-",
+        certificado_escolaridade: state.files.certificado_escolaridade ? state.files.certificado_escolaridade.name : "-",
+        certidoes_negativas: state.files.certidoes_negativas ? state.files.certidoes_negativas.name : "-"
+      };
+    }
+
+    function downloadReceiptPdf(protocol, submittedData, replaced, responseData) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF("p", "mm", "a4");
+      const filesSummary = getUploadedFileSummary();
+
+      const lines = [
+        "CONSELHO MUNICIPAL DOS DIREITOS DA CRIANÇA E DO ADOLESCENTE – CMDCA",
+        "NOVA OLINDA DO NORTE – AMAZONAS",
+        "Lei federal 8.069/90 – Leis Municipais nº 16/2001, nº 121/2014 e nº 644/2021",
+        "",
+        "COMPROVANTE DE INSCRIÇÃO",
+        "",
+        `Status da inscrição: ${replaced ? "SUBSTITUIÇÃO DE INSCRIÇÃO ANTERIOR" : "INSCRIÇÃO ENVIADA"}`,
+        `Protocolo: ${protocol || "-"}`,
+        `Data e hora do envio: ${responseData?.dataHora || "-"}`,
+        "",
+        "DADOS DO CANDIDATO",
+        `Nome completo: ${submittedData.nomeCompleto || "-"}`,
+        `CPF: ${maskCpf(submittedData.cpf || "")}`,
+        `RG: ${submittedData.rg || "-"}`,
+        `Data de nascimento: ${submittedData.dataNascimento || "-"}`,
+        `Idade: ${submittedData.idadeDeclarada || "-"}`,
+        `Estado civil: ${submittedData.estadoCivil || "-"}`,
+        `E-mail: ${submittedData.email || "-"}`,
+        `Telefone: ${maskPhone(submittedData.telefone || "")}`,
+        `Endereço: ${submittedData.endereco || "-"}`,
+        `Bairro: ${submittedData.bairro || "-"}`,
+        `CEP: ${maskCep(submittedData.cep || "")}`,
+        `Escolaridade: ${submittedData.escolaridade || "-"}`,
+        `Participou do processo anterior: ${formatYesNo(submittedData.participouProcessoAnterior)}`,
+        `Classificação anterior: ${submittedData.classificacaoAnterior || "-"}`,
+        `Situação de suplência anterior: ${submittedData.situacaoSuplenciaAnterior || "-"}`,
+        `Observações: ${submittedData.observacoes || "-"}`,
+        "",
+        "DOCUMENTOS ANEXADOS",
+        `RG: ${filesSummary.rg}`,
+        `CPF: ${filesSummary.cpf}`,
+        `Comprovante de residência: ${filesSummary.comprovante_residencia}`,
+        `Certificado de escolaridade: ${filesSummary.certificado_escolaridade}`,
+        `Certidões negativas: ${filesSummary.certidoes_negativas}`,
+        "",
+        "DECLARAÇÕES ASSINALADAS",
+        `Termo de disponibilidade: ${formatYesNo(submittedData.declaraDisponibilidade)}`,
+        `Declaração de nova manifestação: ${formatYesNo(submittedData.declaraNovaManifestacao)}`,
+        `Ciência do edital: ${formatYesNo(submittedData.declaraCienciaEdital)}`,
+        `Consentimento LGPD: ${formatYesNo(submittedData.aceitaLgpd)}`
+      ];
+
+      let y = 15;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+
+      lines.forEach((line, index) => {
+        if (y > 280) {
+          doc.addPage();
+          y = 15;
+        }
+
+        if (
+          line === "COMPROVANTE DE INSCRIÇÃO" ||
+          line === "DADOS DO CANDIDATO" ||
+          line === "DOCUMENTOS ANEXADOS" ||
+          line === "DECLARAÇÕES ASSINALADAS"
+        ) {
+          doc.setFont("helvetica", "bold");
+        } else {
+          doc.setFont("helvetica", index < 3 ? "bold" : "normal");
+        }
+
+        const wrapped = doc.splitTextToSize(line, 180);
+        doc.text(wrapped, 15, y);
+        y += wrapped.length * 6;
+      });
+
+      doc.save(`comprovante_inscricao_${(protocol || "sem_protocolo").replace(/\s+/g, "_")}.pdf`);
+    }
+
     function showSuccess(protocol, candidate, replaced) {
       formScreen.classList.add("hidden");
       successScreen.classList.add("active");
@@ -1130,6 +1219,143 @@
         : "Inscrição enviada com sucesso";
       el("successCandidate").textContent = candidate || "-";
       el("successProtocol").textContent = protocol || "-";
+    }
+
+    function openReplaceModal() {
+      if (!state.existingRegistration) return;
+      replaceInfo.innerHTML = `
+        <strong>Protocolo:</strong> ${state.existingRegistration.protocolo}<br>
+        <strong>Candidato:</strong> ${state.existingRegistration.nomeCompleto}<br>
+        <strong>Data:</strong> ${state.existingRegistration.dataHora}
+      `;
+      replaceModal.classList.add("active");
+    }
+
+    function closeReplaceModal() {
+      replaceModal.classList.remove("active");
+    }
+
+    function getIndexedDb() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+
+        request.onupgradeneeded = function(event) {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(DB_STORE)) {
+            db.createObjectStore(DB_STORE);
+          }
+        };
+
+        request.onsuccess = function(event) {
+          resolve(event.target.result);
+        };
+
+        request.onerror = function() {
+          reject(new Error("Não foi possível abrir o armazenamento local."));
+        };
+      });
+    }
+
+    async function setDbValue(key, value) {
+      const db = await getIndexedDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readwrite");
+        tx.objectStore(DB_STORE).put(value, key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(new Error("Falha ao salvar rascunho."));
+      });
+    }
+
+    async function getDbValue(key) {
+      const db = await getIndexedDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readonly");
+        const req = tx.objectStore(DB_STORE).get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(new Error("Falha ao ler rascunho."));
+      });
+    }
+
+    async function clearDbValue(key) {
+      const db = await getIndexedDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readwrite");
+        tx.objectStore(DB_STORE).delete(key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(new Error("Falha ao limpar rascunho."));
+      });
+    }
+
+    async function saveDraft(showMessage = true) {
+      const data = collectFormData();
+
+      const draft = {
+        formData: data,
+        cpfWasChecked: state.cpfWasChecked,
+        savedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+
+      const fileEntries = {};
+      for (const [key, file] of Object.entries(state.files)) {
+        fileEntries[key] = file || null;
+      }
+      await setDbValue(`${DRAFT_KEY}_files`, fileEntries);
+
+      if (showMessage) {
+        setDraftNotice("Rascunho salvo com sucesso neste navegador.");
+      }
+    }
+
+    async function loadDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+
+        const draft = JSON.parse(raw);
+        const data = draft.formData || {};
+
+        const fieldIds = [
+          "nomeCompleto", "cpf", "rg", "dataNascimento", "idadeDeclarada", "estadoCivil",
+          "email", "telefone", "endereco", "bairro", "cep", "escolaridade",
+          "classificacaoAnterior", "situacaoSuplenciaAnterior", "observacoes"
+        ];
+
+        fieldIds.forEach((id) => {
+          if (el(id) && data[id] !== undefined && data[id] !== null) {
+            el(id).value = data[id];
+          }
+        });
+
+        el("participouProcessoAnterior").checked = !!data.participouProcessoAnterior;
+        el("declaraDisponibilidade").checked = !!data.declaraDisponibilidade;
+        el("declaraNovaManifestacao").checked = !!data.declaraNovaManifestacao;
+        el("declaraCienciaEdital").checked = !!data.declaraCienciaEdital;
+        el("aceitaLgpd").checked = !!data.aceitaLgpd;
+
+        state.cpfWasChecked = draft.cpfWasChecked || "";
+
+        const savedFiles = await getDbValue(`${DRAFT_KEY}_files`);
+        if (savedFiles) {
+          Object.keys(state.files).forEach((key) => {
+            if (savedFiles[key]) {
+              state.files[key] = savedFiles[key];
+              updateFileUI(key, savedFiles[key]);
+            }
+          });
+        }
+
+        setDraftNotice("Rascunho recuperado com sucesso. Você pode continuar sua inscrição.");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function clearDraft() {
+      localStorage.removeItem(DRAFT_KEY);
+      await clearDbValue(`${DRAFT_KEY}_files`);
+      setDraftNotice("");
     }
 
     async function submitForm(confirmarSubstituicao = false) {
@@ -1149,10 +1375,13 @@
           ...data,
           confirmarSubstituicao,
           protocoloAnteriorSubstituido: state.existingRegistration?.protocolo || "",
-          arquivos
+          arquivos,
+          modoTeste: TEST_MODE
         };
 
-        const res = await fetch(API_URL, {
+        const url = TEST_MODE ? `${API_URL}?modo_teste=1` : API_URL;
+
+        const res = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -1173,7 +1402,21 @@
           throw new Error(response.error || response.message || "Falha ao enviar inscrição.");
         }
 
+        state.lastReceipt = {
+          protocol: response.protocolo,
+          submittedData: data,
+          replaced: !!response.replacedPrevious,
+          responseData: response
+        };
+
         closeReplaceModal();
+        await clearDraft();
+        downloadReceiptPdf(
+          response.protocolo,
+          data,
+          !!response.replacedPrevious,
+          response
+        );
         showSuccess(response.protocolo, data.nomeCompleto, !!response.replacedPrevious);
       } catch (err) {
         setGlobalError(err.message || "Erro ao enviar inscrição.");
@@ -1184,21 +1427,51 @@
       }
     }
 
-    function openReplaceModal() {
-      if (!state.existingRegistration) return;
-      replaceInfo.innerHTML = `
-        <strong>Protocolo:</strong> ${state.existingRegistration.protocolo}<br>
-        <strong>Candidato:</strong> ${state.existingRegistration.nomeCompleto}<br>
-        <strong>Data:</strong> ${state.existingRegistration.dataHora}
-      `;
-      replaceModal.classList.add("active");
+    async function checkCpf() {
+      clearErrors();
+      hideExistingRegistration();
+
+      if (!isPeriodOpen()) {
+        setGlobalError("As inscrições estão fora do período permitido.");
+        return;
+      }
+
+      const cpf = onlyDigits(el("cpf").value);
+      if (cpf.length !== 11) {
+        setFieldError("cpf", "Informe um CPF válido para consulta.");
+        return;
+      }
+
+      const btn = el("checkCpfBtn");
+      btn.disabled = true;
+      btn.textContent = "Consultando...";
+
+      try {
+        const url = TEST_MODE
+          ? `${API_URL}?action=checkCpf&cpf=${encodeURIComponent(cpf)}&modo_teste=1`
+          : `${API_URL}?action=checkCpf&cpf=${encodeURIComponent(cpf)}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.ok) {
+          throw new Error(data.error || "Falha ao consultar CPF.");
+        }
+
+        state.cpfWasChecked = cpf;
+
+        if (data.exists && data.existingRegistration) {
+          showExistingRegistration(data.existingRegistration);
+        }
+      } catch (err) {
+        setFieldError("cpf", err.message || "Erro ao consultar CPF.");
+      } finally {
+        btn.disabled = !isPeriodOpen();
+        btn.textContent = "Consultar CPF";
+      }
     }
 
-    function closeReplaceModal() {
-      replaceModal.classList.remove("active");
-    }
-
-    function resetForm() {
+    function resetFormVisual() {
       form.reset();
       el("idadeDeclarada").value = "";
       clearErrors();
@@ -1210,35 +1483,93 @@
       });
     }
 
-    el("cpf").addEventListener("input", (e) => {
+    async function resetForm() {
+      resetFormVisual();
+      await clearDraft();
+    }
+
+    const fileMap = {
+      rg: "file_rg",
+      cpf: "file_cpf",
+      comprovante_residencia: "file_comprovante_residencia",
+      certificado_escolaridade: "file_certificado_escolaridade",
+      certidoes_negativas: "file_certidoes_negativas"
+    };
+
+    el("cpf").addEventListener("input", async (e) => {
       e.target.value = maskCpf(e.target.value);
       state.cpfWasChecked = "";
       hideExistingRegistration();
+      await saveDraft(false);
     });
 
-    el("telefone").addEventListener("input", (e) => {
+    el("telefone").addEventListener("input", async (e) => {
       e.target.value = maskPhone(e.target.value);
+      await saveDraft(false);
     });
 
-    el("cep").addEventListener("input", (e) => {
+    el("cep").addEventListener("input", async (e) => {
       e.target.value = maskCep(e.target.value);
+      await saveDraft(false);
     });
 
-    el("dataNascimento").addEventListener("change", (e) => {
+    el("dataNascimento").addEventListener("change", async (e) => {
       el("idadeDeclarada").value = calculateAge(e.target.value);
+      await saveDraft(false);
+    });
+
+    [
+      "nomeCompleto","rg","estadoCivil","email","endereco","bairro",
+      "classificacaoAnterior","observacoes"
+    ].forEach((id) => {
+      el(id).addEventListener("input", async () => {
+        await saveDraft(false);
+      });
+    });
+
+    ["escolaridade", "situacaoSuplenciaAnterior"].forEach((id) => {
+      el(id).addEventListener("change", async () => {
+        await saveDraft(false);
+      });
+    });
+
+    [
+      "participouProcessoAnterior",
+      "declaraDisponibilidade",
+      "declaraNovaManifestacao",
+      "declaraCienciaEdital",
+      "aceitaLgpd"
+    ].forEach((id) => {
+      el(id).addEventListener("change", async () => {
+        await saveDraft(false);
+      });
     });
 
     el("checkCpfBtn").addEventListener("click", checkCpf);
-    el("resetBtn").addEventListener("click", resetForm);
+    el("saveDraftBtn").addEventListener("click", async () => {
+      await saveDraft(true);
+    });
+    el("resetBtn").addEventListener("click", async () => {
+      await resetForm();
+    });
     el("cancelReplaceBtn").addEventListener("click", closeReplaceModal);
     el("confirmReplaceBtn").addEventListener("click", async () => {
       closeReplaceModal();
       await submitForm(true);
     });
-    el("newSubmissionBtn").addEventListener("click", () => {
+    el("downloadReceiptBtn").addEventListener("click", () => {
+      if (!state.lastReceipt) return;
+      downloadReceiptPdf(
+        state.lastReceipt.protocol,
+        state.lastReceipt.submittedData,
+        state.lastReceipt.replaced,
+        state.lastReceipt.responseData
+      );
+    });
+    el("newSubmissionBtn").addEventListener("click", async () => {
       successScreen.classList.remove("active");
       formScreen.classList.remove("hidden");
-      resetForm();
+      await resetForm();
       applyPeriodState();
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -1248,27 +1579,19 @@
       await submitForm(false);
     });
 
-    const fileMap = {
-      rg: "file_rg",
-      cpf: "file_cpf",
-      comprovante_residencia: "file_comprovante_residencia",
-      certificado_escolaridade: "file_certificado_escolaridade",
-      certidoes_negativas: "file_certidoes_negativas",
-      termo_disponibilidade: "file_termo_disponibilidade",
-      declaracao_nova_manifestacao: "file_declaracao_nova_manifestacao"
-    };
-
     Object.entries(fileMap).forEach(([field, inputId]) => {
-      el(inputId).addEventListener("change", (event) => {
+      el(inputId).addEventListener("change", async (event) => {
         const file = event.target.files?.[0] || null;
         state.files[field] = file;
         updateFileUI(field, file);
         setFieldError(`${field}_file`, file ? validateFile(field, file) : "Documento obrigatório.");
+        await saveDraft(false);
       });
     });
 
     applyPeriodState();
     updateSelectedFilesCount();
+    loadDraft();
   </script>
 </body>
 </html>
