@@ -89,8 +89,8 @@
 
     .header-text h1 {
       margin: 0;
-      font-size: 26px;
-      line-height: 1.25;
+      font-size: 22px;
+      line-height: 1.2;
       font-weight: 800;
       letter-spacing: 0.2px;
       text-transform: uppercase;
@@ -98,16 +98,16 @@
 
     .header-text h2 {
       margin: 8px 0 0;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.3;
       text-transform: uppercase;
     }
 
     .header-text p {
       margin: 10px 0 0;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.45;
       color: rgba(255,255,255,0.92);
       font-weight: 600;
     }
@@ -119,8 +119,8 @@
       border-radius: 18px;
       padding: 12px 16px;
       text-align: center;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.45;
       font-weight: 600;
     }
 
@@ -473,6 +473,7 @@
     @media (max-width: 980px) {
       .brand-row {
         grid-template-columns: 1fr;
+        gap: 14px;
       }
 
       .header-text {
@@ -493,15 +494,90 @@
       }
 
       .topbar {
-        padding: 22px 18px 20px;
+        padding: 20px 18px 18px;
       }
 
       .header-text h1 {
-        font-size: 20px;
+        font-size: 18px;
+        line-height: 1.2;
       }
 
       .header-text h2 {
-        font-size: 15px;
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .header-text p {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .subhead {
+        margin-top: 12px;
+        padding: 10px 12px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .logo-main {
+        width: 72px;
+        height: 72px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 12px;
+      }
+
+      .app-card {
+        border-radius: 22px;
+      }
+
+      .topbar {
+        padding: 16px 14px 16px;
+      }
+
+      .content {
+        padding: 14px;
+      }
+
+      .section {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .section h3 {
+        font-size: 18px;
+        margin-bottom: 14px;
+      }
+
+      .header-text h1 {
+        font-size: 16px;
+      }
+
+      .header-text h2 {
+        margin-top: 6px;
+        font-size: 13px;
+      }
+
+      .header-text p {
+        margin-top: 8px;
+        font-size: 11px;
+      }
+
+      .subhead {
+        font-size: 11px;
+        padding: 10px;
+      }
+
+      .split-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .badge {
+        font-size: 12px;
       }
     }
   </style>
@@ -1369,7 +1445,7 @@
         const res = await fetch(url, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "text/plain;charset=utf-8"
           },
           body: JSON.stringify(payload)
         });
@@ -1404,7 +1480,10 @@
         );
         showSuccess(response.protocolo, data.nomeCompleto, !!response.replacedPrevious);
       } catch (err) {
-        setGlobalError(err.message || "Erro ao enviar inscrição.");
+        const message = err?.message === "Load failed" || err?.message === "Failed to fetch"
+          ? "Falha de comunicação com o Apps Script. Verifique se o Web App foi implantado com acesso público e tente novamente."
+          : (err.message || "Erro ao enviar inscrição.");
+        setGlobalError(message);
       } finally {
         state.sending = false;
         submitBtn.disabled = !isPeriodOpen();
