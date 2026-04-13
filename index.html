@@ -1,1 +1,1274 @@
-vazio
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PSS Conselho Tutelar 2026 - CMDCA Nova Olinda do Norte</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #10233d;
+      --muted: #5e6b7a;
+      --line: #d7e0ea;
+      --primary: #0d47a1;
+      --primary-2: #1565c0;
+      --accent: #1b5e20;
+      --warn-bg: #fff3cd;
+      --warn-text: #7a4b00;
+      --error-bg: #fdecea;
+      --error-text: #9b1c1c;
+      --ok-bg: #edf7ed;
+      --ok-text: #1e6b2c;
+      --shadow: 0 10px 30px rgba(16, 35, 61, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #edf3fb 0%, #f7f9fc 100%);
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .app-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, #0b2f6b 0%, #0d47a1 55%, #1565c0 100%);
+      color: white;
+      padding: 28px 28px 22px;
+    }
+
+    .brand-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 110px;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .logo-stack {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .logo-main {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 8px;
+    }
+
+    .logo-side {
+      width: 78px;
+      height: 78px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 8px;
+    }
+
+    .header-text {
+      text-align: center;
+    }
+
+    .header-text h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+
+    .header-text h2 {
+      margin: 8px 0 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .header-text p {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.92);
+      font-weight: 600;
+    }
+
+    .subhead {
+      margin-top: 16px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .notice {
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+      border: 1px solid transparent;
+    }
+
+    .notice.warn {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border-color: #f2de91;
+    }
+
+    .notice.error {
+      background: var(--error-bg);
+      color: var(--error-text);
+      border-color: #f4c7c3;
+    }
+
+    .notice.ok {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border-color: #b9dfbc;
+    }
+
+    .section {
+      margin-bottom: 28px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      background: #fff;
+    }
+
+    .section h3 {
+      margin: 0 0 16px;
+      font-size: 20px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid #c8d3df;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 15px;
+      color: var(--text);
+      background: white;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--primary-2);
+      box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+    }
+
+    .field input[readonly] {
+      background: #f6f8fb;
+    }
+
+    .field small.error {
+      display: block;
+      margin-top: 7px;
+      color: #b42318;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .checkbox-box {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fbfdff;
+      min-height: 53px;
+      display: flex;
+      align-items: center;
+    }
+
+    .checkbox-box label {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .checkbox-box input[type="checkbox"] {
+      margin-top: 3px;
+      transform: scale(1.1);
+    }
+
+    .upload-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fbfdff;
+    }
+
+    .upload-card input[type="file"] {
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e8eef5;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .progress > div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1565c0, #42a5f5);
+      transition: width 0.2s ease;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary-2);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #0f55af;
+    }
+
+    .btn-dark {
+      background: #13253f;
+      color: white;
+    }
+
+    .btn-dark:hover:not(:disabled) {
+      background: #0d1c31;
+    }
+
+    .btn-warn {
+      background: #c77700;
+      color: white;
+    }
+
+    .btn-warn:hover:not(:disabled) {
+      background: #a86300;
+    }
+
+    .btn-light {
+      background: white;
+      border: 1px solid #c8d3df;
+      color: var(--text);
+    }
+
+    .btn-light:hover:not(:disabled) {
+      background: #f6f8fb;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: #edf4ff;
+      color: #114a9f;
+      border: 1px solid #cfe0fb;
+    }
+
+    .split-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .existing-box {
+      border-radius: 16px;
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fdba74;
+      padding: 16px;
+      margin-top: 18px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 24px 48px;
+    }
+
+    .success-screen.active {
+      display: block;
+    }
+
+    .success-card {
+      max-width: 760px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: white;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .success-card h2 {
+      margin: 12px 0 10px;
+      font-size: 32px;
+    }
+
+    .success-data {
+      margin-top: 22px;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #f8fbff;
+      border-radius: 18px;
+      padding: 20px;
+      line-height: 1.7;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 18, 33, 0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      padding: 24px;
+    }
+
+    .modal h4 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .modal p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .modal .info {
+      border-radius: 16px;
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      color: #9a3412;
+      padding: 14px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .brand-row {
+        grid-template-columns: 1fr;
+      }
+
+      .header-text {
+        order: 1;
+      }
+
+      .logo-stack {
+        order: 0;
+      }
+
+      .grid-3,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .topbar {
+        padding: 22px 18px 20px;
+      }
+
+      .header-text h1 {
+        font-size: 20px;
+      }
+
+      .header-text h2 {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="container">
+      <div class="app-card" id="appCard">
+        <div id="formScreen">
+          <div class="topbar">
+            <div class="brand-row">
+              <div class="logo-stack">
+                <img src="./Bandeira de NON.png" alt="Bandeira de Nova Olinda do Norte" class="logo-side" />
+              </div>
+
+              <div class="header-text">
+                <h1>CONSELHO MUNICIPAL DOS DIREITOS DA CRIANÇA E DO ADOLESCENTE – CMDCA</h1>
+                <h2>NOVA OLINDA DO NORTE – AMAZONAS</h2>
+                <p>Lei federal 8.069/90 – Leis Municipais nº 16/2001, Nº 121/2014 e Nº 644/2021</p>
+
+                <div class="subhead">
+                  Processo Simplificado de Recomposição de Suplentes do Conselho Tutelar – Inscrição On-line 2026
+                </div>
+              </div>
+
+              <div class="logo-stack">
+                <img src="./Logo CMDCA.png" alt="Logo do CMDCA" class="logo-main" />
+                <img src="./Brasao de NON.png" alt="Brasão de Nova Olinda do Norte" class="logo-side" />
+              </div>
+            </div>
+          </div>
+
+          <div class="content">
+            <div class="notice warn" id="periodNotice">
+              Cada candidato pode manter apenas <strong>uma inscrição ativa</strong>. Caso já exista uma inscrição vinculada ao CPF informado, uma nova inscrição somente será aceita mediante confirmação de substituição da anterior.
+            </div>
+
+            <div class="notice error hidden" id="globalError"></div>
+
+            <form id="inscricaoForm">
+              <div class="section">
+                <h3>Dados pessoais</h3>
+                <div class="grid grid-3">
+                  <div class="field">
+                    <label for="nomeCompleto">Nome completo</label>
+                    <input id="nomeCompleto" name="nomeCompleto" type="text" />
+                    <small class="error" data-error-for="nomeCompleto"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="cpf">CPF</label>
+                    <input id="cpf" name="cpf" type="text" maxlength="14" />
+                    <small class="error" data-error-for="cpf"></small>
+                  </div>
+
+                  <div class="field">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-dark" type="button" id="checkCpfBtn">Consultar CPF</button>
+                  </div>
+
+                  <div class="field">
+                    <label for="rg">RG</label>
+                    <input id="rg" name="rg" type="text" />
+                    <small class="error" data-error-for="rg"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="dataNascimento">Data de nascimento</label>
+                    <input id="dataNascimento" name="dataNascimento" type="date" />
+                    <small class="error" data-error-for="dataNascimento"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="idadeDeclarada">Idade</label>
+                    <input id="idadeDeclarada" name="idadeDeclarada" type="text" readonly />
+                    <small class="error" data-error-for="idadeDeclarada"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="estadoCivil">Estado civil</label>
+                    <input id="estadoCivil" name="estadoCivil" type="text" />
+                    <small class="error" data-error-for="estadoCivil"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="email">E-mail</label>
+                    <input id="email" name="email" type="email" />
+                    <small class="error" data-error-for="email"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="telefone">Telefone</label>
+                    <input id="telefone" name="telefone" type="text" maxlength="15" />
+                    <small class="error" data-error-for="telefone"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="endereco">Endereço</label>
+                    <input id="endereco" name="endereco" type="text" />
+                    <small class="error" data-error-for="endereco"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="bairro">Bairro</label>
+                    <input id="bairro" name="bairro" type="text" />
+                    <small class="error" data-error-for="bairro"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="cep">CEP</label>
+                    <input id="cep" name="cep" type="text" maxlength="9" />
+                    <small class="error" data-error-for="cep"></small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <h3>Informações complementares</h3>
+                <div class="grid grid-2">
+                  <div class="field">
+                    <label for="escolaridade">Escolaridade</label>
+                    <select id="escolaridade" name="escolaridade">
+                      <option>Ensino Médio Completo</option>
+                      <option>Ensino Superior Incompleto</option>
+                      <option>Ensino Superior Completo</option>
+                      <option>Pós-graduação</option>
+                    </select>
+                    <small class="error" data-error-for="escolaridade"></small>
+                  </div>
+
+                  <div class="field">
+                    <label for="situacaoSuplenciaAnterior">Situação de suplência anterior</label>
+                    <select id="situacaoSuplenciaAnterior" name="situacaoSuplenciaAnterior">
+                      <option>Nunca foi suplente</option>
+                      <option>Foi suplente e não renunciou</option>
+                      <option>Foi suplente e renunciou formalmente</option>
+                    </select>
+                  </div>
+
+                  <div class="checkbox-box">
+                    <label>
+                      <input id="participouProcessoAnterior" name="participouProcessoAnterior" type="checkbox" />
+                      Participou do processo de escolha anterior
+                    </label>
+                  </div>
+
+                  <div class="field">
+                    <label for="classificacaoAnterior">Classificação anterior</label>
+                    <input id="classificacaoAnterior" name="classificacaoAnterior" type="text" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <h3>Observações</h3>
+                <div class="field">
+                  <textarea id="observacoes" name="observacoes" rows="4"></textarea>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="split-head">
+                  <h3 style="margin:0;">Documentos obrigatórios</h3>
+                  <span class="badge"><span id="selectedFilesCount">0</span>/7 enviados</span>
+                </div>
+
+                <div class="grid grid-2">
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_rg">Documento de RG</label>
+                      <input id="file_rg" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_rg"></div></div>
+                      <div class="muted" id="name_rg"></div>
+                      <small class="error" data-error-for="rg_file"></small>
+                    </div>
+                  </div>
+
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_cpf">Documento de CPF</label>
+                      <input id="file_cpf" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_cpf"></div></div>
+                      <div class="muted" id="name_cpf"></div>
+                      <small class="error" data-error-for="cpf_file"></small>
+                    </div>
+                  </div>
+
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_comprovante_residencia">Comprovante de residência</label>
+                      <input id="file_comprovante_residencia" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_comprovante_residencia"></div></div>
+                      <div class="muted" id="name_comprovante_residencia"></div>
+                      <small class="error" data-error-for="comprovante_residencia_file"></small>
+                    </div>
+                  </div>
+
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_certificado_escolaridade">Certificado de escolaridade</label>
+                      <input id="file_certificado_escolaridade" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_certificado_escolaridade"></div></div>
+                      <div class="muted" id="name_certificado_escolaridade"></div>
+                      <small class="error" data-error-for="certificado_escolaridade_file"></small>
+                    </div>
+                  </div>
+
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_certidoes_negativas">Certidões negativas</label>
+                      <input id="file_certidoes_negativas" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_certidoes_negativas"></div></div>
+                      <div class="muted" id="name_certidoes_negativas"></div>
+                      <small class="error" data-error-for="certidoes_negativas_file"></small>
+                    </div>
+                  </div>
+
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_termo_disponibilidade">Termo de disponibilidade</label>
+                      <input id="file_termo_disponibilidade" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_termo_disponibilidade"></div></div>
+                      <div class="muted" id="name_termo_disponibilidade"></div>
+                      <small class="error" data-error-for="termo_disponibilidade_file"></small>
+                    </div>
+                  </div>
+
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_declaracao_nova_manifestacao">Declaração de nova manifestação de interesse</label>
+                      <input id="file_declaracao_nova_manifestacao" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+                      <div class="progress"><div id="progress_declaracao_nova_manifestacao"></div></div>
+                      <div class="muted" id="name_declaracao_nova_manifestacao"></div>
+                      <small class="error" data-error-for="declaracao_nova_manifestacao_file"></small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <h3>Declarações</h3>
+
+                <div class="checkbox-box" style="margin-bottom:12px;">
+                  <label>
+                    <input id="declaraDisponibilidade" name="declaraDisponibilidade" type="checkbox" />
+                    Declaro que possuo disponibilidade para o exercício da função, conforme as regras do procedimento.
+                  </label>
+                </div>
+
+                <div class="checkbox-box" style="margin-bottom:12px;">
+                  <label>
+                    <input id="declaraCienciaEdital" name="declaraCienciaEdital" type="checkbox" />
+                    Declaro ciência integral das regras do edital e das condições da inscrição.
+                  </label>
+                </div>
+
+                <div class="checkbox-box">
+                  <label>
+                    <input id="aceitaLgpd" name="aceitaLgpd" type="checkbox" />
+                    Autorizo o tratamento dos meus dados pessoais e documentos exclusivamente para fins de inscrição, análise, validação, classificação e demais atos administrativos do PSS Conselho Tutelar 2026, nos termos da LGPD.
+                  </label>
+                </div>
+              </div>
+
+              <div class="existing-box hidden" id="existingBox"></div>
+
+              <div class="actions">
+                <button class="btn btn-primary" type="submit" id="submitBtn">Enviar inscrição</button>
+                <button class="btn btn-light" type="button" id="resetBtn">Limpar</button>
+              </div>
+
+              <div class="footer-note">
+                Para melhor compatibilidade, envie os documentos em PDF, JPG ou PNG, com tamanho máximo de 10 MB por arquivo.
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="success-screen" id="successScreen">
+          <div class="success-card">
+            <span class="badge">Inscrição concluída</span>
+            <h2 id="successTitle">Inscrição enviada com sucesso</h2>
+            <p id="successSubtitle">O envio foi registrado no sistema.</p>
+
+            <div class="success-data">
+              <div><strong>Candidato:</strong> <span id="successCandidate">-</span></div>
+              <div><strong>Protocolo:</strong> <span id="successProtocol">-</span></div>
+            </div>
+
+            <div class="actions" style="justify-content:center; margin-top:24px;">
+              <button class="btn btn-primary" type="button" id="newSubmissionBtn">Nova consulta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="replaceModal">
+    <div class="modal">
+      <h4>Inscrição já existente</h4>
+      <p>Já existe uma inscrição ativa vinculada a este CPF.</p>
+
+      <div class="info" id="replaceInfo"></div>
+
+      <p style="margin-top:14px;">
+        Se você continuar, a inscrição atual substituirá a anterior.
+      </p>
+
+      <div class="actions" style="margin-top:18px;">
+        <button class="btn btn-warn" type="button" id="confirmReplaceBtn">Confirmar substituição</button>
+        <button class="btn btn-light" type="button" id="cancelReplaceBtn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyRVR30wzrbpBcLpnvvJFIc2VK7y27XHHnRGkhOOnBV9JyNXETf5Pv1h8A27VkAPOiwiw/exec";
+    const MAX_FILE_SIZE_MB = 10;
+    const ACCEPTED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
+    const INSCRIPTION_START = new Date("2026-04-20T00:00:00-03:00");
+    const INSCRIPTION_END = new Date("2026-04-24T23:59:59-03:00");
+
+    const state = {
+      files: {
+        rg: null,
+        cpf: null,
+        comprovante_residencia: null,
+        certificado_escolaridade: null,
+        certidoes_negativas: null,
+        termo_disponibilidade: null,
+        declaracao_nova_manifestacao: null,
+      },
+      existingRegistration: null,
+      cpfWasChecked: "",
+      sending: false
+    };
+
+    const el = (id) => document.getElementById(id);
+
+    const form = el("inscricaoForm");
+    const globalError = el("globalError");
+    const existingBox = el("existingBox");
+    const replaceModal = el("replaceModal");
+    const replaceInfo = el("replaceInfo");
+    const successScreen = el("successScreen");
+    const formScreen = el("formScreen");
+    const selectedFilesCount = el("selectedFilesCount");
+    const submitBtn = el("submitBtn");
+    const periodNotice = el("periodNotice");
+
+    function isPeriodOpen() {
+      const now = new Date();
+      return now >= INSCRIPTION_START && now <= INSCRIPTION_END;
+    }
+
+    function applyPeriodState() {
+      if (!isPeriodOpen()) {
+        submitBtn.disabled = true;
+        el("checkCpfBtn").disabled = true;
+        periodNotice.className = "notice error";
+        periodNotice.innerHTML = "As inscrições estão fora do período permitido.";
+      }
+    }
+
+    function setGlobalError(message) {
+      if (!message) {
+        globalError.classList.add("hidden");
+        globalError.textContent = "";
+        return;
+      }
+      globalError.classList.remove("hidden");
+      globalError.textContent = message;
+    }
+
+    function clearErrors() {
+      document.querySelectorAll("small[data-error-for]").forEach((node) => {
+        node.textContent = "";
+      });
+      setGlobalError("");
+    }
+
+    function setFieldError(key, message) {
+      const node = document.querySelector(`small[data-error-for="${key}"]`);
+      if (node) node.textContent = message;
+    }
+
+    function onlyDigits(value) {
+      return String(value || "").replace(/\D/g, "");
+    }
+
+    function maskCpf(value) {
+      const v = onlyDigits(value).slice(0, 11);
+      return v
+        .replace(/^(\d{3})(\d)/, "$1.$2")
+        .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+        .replace(/\.(\d{3})(\d)/, ".$1-$2");
+    }
+
+    function maskCep(value) {
+      const v = onlyDigits(value).slice(0, 8);
+      return v.replace(/^(\d{5})(\d)/, "$1-$2");
+    }
+
+    function maskPhone(value) {
+      const v = onlyDigits(value).slice(0, 11);
+      if (v.length <= 10) {
+        return v
+          .replace(/^(\d{2})(\d)/, "($1) $2")
+          .replace(/(\d{4})(\d)/, "$1-$2");
+      }
+      return v
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d)/, "$1-$2");
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
+    }
+
+    function calculateAge(dateString) {
+      if (!dateString) return "";
+      const birth = new Date(`${dateString}T00:00:00`);
+      if (Number.isNaN(birth.getTime())) return "";
+
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+      }
+
+      return age >= 0 ? String(age) : "";
+    }
+
+    function updateSelectedFilesCount() {
+      const total = Object.values(state.files).filter(Boolean).length;
+      selectedFilesCount.textContent = String(total);
+    }
+
+    function updateFileUI(field, file) {
+      el(`name_${field}`).textContent = file ? file.name : "";
+      el(`progress_${field}`).style.width = file ? "100%" : "0%";
+      updateSelectedFilesCount();
+    }
+
+    function validateFile(field, file) {
+      if (!file) return "Documento obrigatório.";
+      if (!ACCEPTED_TYPES.includes(file.type)) return "Tipo inválido. Envie PDF, JPG, JPEG ou PNG.";
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) return `Arquivo acima de ${MAX_FILE_SIZE_MB}MB.`;
+      return "";
+    }
+
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result !== "string") {
+            reject(new Error("Erro ao converter arquivo."));
+            return;
+          }
+          resolve(reader.result.split(",")[1]);
+        };
+        reader.onerror = () => reject(new Error("Erro ao ler arquivo."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function showExistingRegistration(data) {
+      state.existingRegistration = data;
+      existingBox.classList.remove("hidden");
+      existingBox.innerHTML = `
+        <strong>Inscrição já localizada para este CPF.</strong><br>
+        <strong>Protocolo:</strong> ${data.protocolo}<br>
+        <strong>Candidato:</strong> ${data.nomeCompleto}<br>
+        <strong>Data:</strong> ${data.dataHora}
+      `;
+    }
+
+    function hideExistingRegistration() {
+      state.existingRegistration = null;
+      existingBox.classList.add("hidden");
+      existingBox.innerHTML = "";
+    }
+
+    async function checkCpf() {
+      clearErrors();
+      hideExistingRegistration();
+
+      if (!isPeriodOpen()) {
+        setGlobalError("As inscrições estão fora do período permitido.");
+        return;
+      }
+
+      const cpf = onlyDigits(el("cpf").value);
+      if (cpf.length !== 11) {
+        setFieldError("cpf", "Informe um CPF válido para consulta.");
+        return;
+      }
+
+      const btn = el("checkCpfBtn");
+      btn.disabled = true;
+      btn.textContent = "Consultando...";
+
+      try {
+        const res = await fetch(`${API_URL}?action=checkCpf&cpf=${encodeURIComponent(cpf)}`);
+        const data = await res.json();
+
+        if (!data.ok) {
+          throw new Error(data.error || "Falha ao consultar CPF.");
+        }
+
+        state.cpfWasChecked = cpf;
+
+        if (data.exists && data.existingRegistration) {
+          showExistingRegistration(data.existingRegistration);
+        }
+      } catch (err) {
+        setFieldError("cpf", err.message || "Erro ao consultar CPF.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Consultar CPF";
+      }
+    }
+
+    function collectFormData() {
+      return {
+        nomeCompleto: el("nomeCompleto").value.trim(),
+        cpf: onlyDigits(el("cpf").value),
+        rg: el("rg").value.trim(),
+        dataNascimento: el("dataNascimento").value,
+        idadeDeclarada: el("idadeDeclarada").value.trim(),
+        estadoCivil: el("estadoCivil").value.trim(),
+        email: el("email").value.trim(),
+        telefone: onlyDigits(el("telefone").value),
+        endereco: el("endereco").value.trim(),
+        bairro: el("bairro").value.trim(),
+        cep: onlyDigits(el("cep").value),
+        escolaridade: el("escolaridade").value,
+        participouProcessoAnterior: el("participouProcessoAnterior").checked,
+        classificacaoAnterior: el("classificacaoAnterior").value.trim(),
+        situacaoSuplenciaAnterior: el("situacaoSuplenciaAnterior").value,
+        declaraDisponibilidade: el("declaraDisponibilidade").checked,
+        declaraCienciaEdital: el("declaraCienciaEdital").checked,
+        aceitaLgpd: el("aceitaLgpd").checked,
+        observacoes: el("observacoes").value.trim()
+      };
+    }
+
+    function validateFormData(data) {
+      clearErrors();
+      let hasError = false;
+
+      if (!isPeriodOpen()) {
+        setGlobalError("As inscrições estão fora do período permitido.");
+        hasError = true;
+      }
+
+      if (!data.nomeCompleto) { setFieldError("nomeCompleto", "Campo obrigatório."); hasError = true; }
+      if (data.cpf.length !== 11) { setFieldError("cpf", "CPF inválido."); hasError = true; }
+      if (!data.rg) { setFieldError("rg", "Campo obrigatório."); hasError = true; }
+      if (!data.dataNascimento) { setFieldError("dataNascimento", "Campo obrigatório."); hasError = true; }
+      if (!data.idadeDeclarada) { setFieldError("idadeDeclarada", "Campo obrigatório."); hasError = true; }
+      if (!data.estadoCivil) { setFieldError("estadoCivil", "Campo obrigatório."); hasError = true; }
+      if (!isValidEmail(data.email)) { setFieldError("email", "E-mail inválido."); hasError = true; }
+      if (data.telefone.length < 10) { setFieldError("telefone", "Telefone inválido."); hasError = true; }
+      if (!data.endereco) { setFieldError("endereco", "Campo obrigatório."); hasError = true; }
+      if (!data.bairro) { setFieldError("bairro", "Campo obrigatório."); hasError = true; }
+      if (data.cep.length !== 8) { setFieldError("cep", "CEP inválido."); hasError = true; }
+      if (!data.escolaridade) { setFieldError("escolaridade", "Campo obrigatório."); hasError = true; }
+
+      if (!data.declaraDisponibilidade) {
+        setGlobalError("Aceite a declaração de disponibilidade.");
+        hasError = true;
+      }
+
+      if (!data.declaraCienciaEdital) {
+        setGlobalError("Declare ciência do edital.");
+        hasError = true;
+      }
+
+      if (!data.aceitaLgpd) {
+        setGlobalError("Aceite o termo de tratamento de dados pessoais.");
+        hasError = true;
+      }
+
+      if (state.cpfWasChecked !== data.cpf) {
+        setFieldError("cpf", "Consulte o CPF antes de enviar.");
+        hasError = true;
+      }
+
+      const fileKeys = Object.keys(state.files);
+      for (const key of fileKeys) {
+        const validationMessage = validateFile(key, state.files[key]);
+        if (validationMessage) {
+          setFieldError(`${key}_file`, validationMessage);
+          hasError = true;
+        }
+      }
+
+      return !hasError;
+    }
+
+    async function buildFilesPayload() {
+      const result = [];
+      for (const [fieldName, file] of Object.entries(state.files)) {
+        if (!file) continue;
+        result.push({
+          fieldName,
+          fileName: file.name,
+          mimeType: file.type,
+          base64: await readFileAsBase64(file)
+        });
+      }
+      return result;
+    }
+
+    function showSuccess(protocol, candidate, replaced) {
+      formScreen.classList.add("hidden");
+      successScreen.classList.add("active");
+      el("successTitle").textContent = replaced
+        ? "Inscrição substituída com sucesso"
+        : "Inscrição enviada com sucesso";
+      el("successCandidate").textContent = candidate || "-";
+      el("successProtocol").textContent = protocol || "-";
+    }
+
+    async function submitForm(confirmarSubstituicao = false) {
+      if (state.sending) return;
+
+      const data = collectFormData();
+      if (!validateFormData(data)) return;
+
+      state.sending = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enviando...";
+
+      try {
+        const arquivos = await buildFilesPayload();
+
+        const payload = {
+          ...data,
+          confirmarSubstituicao,
+          protocoloAnteriorSubstituido: state.existingRegistration?.protocolo || "",
+          arquivos
+        };
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const response = await res.json();
+
+        if (!response.ok) {
+          if (response.requiresConfirmation) {
+            if (response.existingRegistration) {
+              state.existingRegistration = response.existingRegistration;
+            }
+            openReplaceModal();
+            throw new Error(response.message || "Já existe uma inscrição ativa para este CPF.");
+          }
+          throw new Error(response.error || response.message || "Falha ao enviar inscrição.");
+        }
+
+        closeReplaceModal();
+        showSuccess(response.protocolo, data.nomeCompleto, !!response.replacedPrevious);
+      } catch (err) {
+        setGlobalError(err.message || "Erro ao enviar inscrição.");
+      } finally {
+        state.sending = false;
+        submitBtn.disabled = !isPeriodOpen();
+        submitBtn.textContent = "Enviar inscrição";
+      }
+    }
+
+    function openReplaceModal() {
+      if (!state.existingRegistration) return;
+      replaceInfo.innerHTML = `
+        <strong>Protocolo:</strong> ${state.existingRegistration.protocolo}<br>
+        <strong>Candidato:</strong> ${state.existingRegistration.nomeCompleto}<br>
+        <strong>Data:</strong> ${state.existingRegistration.dataHora}
+      `;
+      replaceModal.classList.add("active");
+    }
+
+    function closeReplaceModal() {
+      replaceModal.classList.remove("active");
+    }
+
+    function resetForm() {
+      form.reset();
+      el("idadeDeclarada").value = "";
+      clearErrors();
+      hideExistingRegistration();
+      state.cpfWasChecked = "";
+      Object.keys(state.files).forEach((key) => {
+        state.files[key] = null;
+        updateFileUI(key, null);
+      });
+    }
+
+    el("cpf").addEventListener("input", (e) => {
+      e.target.value = maskCpf(e.target.value);
+      state.cpfWasChecked = "";
+      hideExistingRegistration();
+    });
+
+    el("telefone").addEventListener("input", (e) => {
+      e.target.value = maskPhone(e.target.value);
+    });
+
+    el("cep").addEventListener("input", (e) => {
+      e.target.value = maskCep(e.target.value);
+    });
+
+    el("dataNascimento").addEventListener("change", (e) => {
+      el("idadeDeclarada").value = calculateAge(e.target.value);
+    });
+
+    el("checkCpfBtn").addEventListener("click", checkCpf);
+    el("resetBtn").addEventListener("click", resetForm);
+    el("cancelReplaceBtn").addEventListener("click", closeReplaceModal);
+    el("confirmReplaceBtn").addEventListener("click", async () => {
+      closeReplaceModal();
+      await submitForm(true);
+    });
+    el("newSubmissionBtn").addEventListener("click", () => {
+      successScreen.classList.remove("active");
+      formScreen.classList.remove("hidden");
+      resetForm();
+      applyPeriodState();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await submitForm(false);
+    });
+
+    const fileMap = {
+      rg: "file_rg",
+      cpf: "file_cpf",
+      comprovante_residencia: "file_comprovante_residencia",
+      certificado_escolaridade: "file_certificado_escolaridade",
+      certidoes_negativas: "file_certidoes_negativas",
+      termo_disponibilidade: "file_termo_disponibilidade",
+      declaracao_nova_manifestacao: "file_declaracao_nova_manifestacao"
+    };
+
+    Object.entries(fileMap).forEach(([field, inputId]) => {
+      el(inputId).addEventListener("change", (event) => {
+        const file = event.target.files?.[0] || null;
+        state.files[field] = file;
+        updateFileUI(field, file);
+        setFieldError(`${field}_file`, file ? validateFile(field, file) : "Documento obrigatório.");
+      });
+    });
+
+    applyPeriodState();
+    updateSelectedFilesCount();
+  </script>
+</body>
+</html>
