@@ -1737,14 +1737,6 @@
         closeReplaceModal();
         await clearDraft();
         showSuccess(response.protocolo, data.nomeCompleto, !!response.replacedPrevious);
-        setTimeout(() => {
-          void downloadReceiptPdf(
-            response.protocolo,
-            data,
-            !!response.replacedPrevious,
-            response
-          );
-        }, 50);
       } catch (err) {
         const message = err?.message === "Load failed" || err?.message === "Failed to fetch"
           ? "Falha de comunicação com o Apps Script. Verifique se o Web App foi implantado com acesso público e tente novamente."
