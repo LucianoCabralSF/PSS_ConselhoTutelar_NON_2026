@@ -83,16 +83,6 @@
       padding: 8px;
     }
 
-    .logo-side {
-      width: 78px;
-      height: 78px;
-      object-fit: contain;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 18px;
-      padding: 8px;
-    }
-
     .header-text {
       text-align: center;
     }
@@ -524,7 +514,6 @@
           <div class="topbar">
             <div class="brand-row">
               <div class="logo-stack">
-                <img src="./Bandeira de NON.png" alt="Bandeira de Nova Olinda do Norte" class="logo-side" />
                 <img src="./Logo CMDCA.png" alt="Logo do CMDCA" class="logo-main" />
               </div>
 
@@ -670,15 +659,11 @@
               </div>
 
               <div class="section">
-                <h3>Certidões negativas exigidas</h3>
+                <h3>Documento de antecedentes criminais</h3>
                 <div class="notice warn" style="margin-bottom:0;">
-                  O arquivo enviado em <strong>Certidões negativas</strong> pode ser um único PDF reunindo todas as certidões, ou documento equivalente organizado pelo candidato.
+                  Envie em <strong>Antecedentes criminais</strong> o documento comprobatório exigido pelo procedimento, em PDF, JPG ou PNG.
                   <ul class="cert-list">
-                    <li>Certidão negativa cível da Justiça Estadual</li>
-                    <li>Certidão negativa criminal da Justiça Estadual</li>
-                    <li>Certidão negativa criminal da Justiça Federal</li>
-                    <li>Certidão de quitação eleitoral</li>
-                    <li>Certidão de crimes eleitorais, quando aplicável</li>
+                    <li>Certidão de antecedentes criminais</li>
                   </ul>
                 </div>
               </div>
@@ -732,7 +717,7 @@
 
                   <div class="upload-card">
                     <div class="field">
-                      <label for="file_certidoes_negativas">Certidões negativas</label>
+                      <label for="file_certidoes_negativas">Antecedentes criminais</label>
                       <input id="file_certidoes_negativas" type="file" accept=".pdf,.jpg,.jpeg,.png" />
                       <div class="progress"><div id="progress_certidoes_negativas"></div></div>
                       <div class="muted" id="name_certidoes_negativas"></div>
@@ -748,14 +733,14 @@
                 <div class="checkbox-box" style="margin-bottom:12px;">
                   <label>
                     <input id="declaraDisponibilidade" name="declaraDisponibilidade" type="checkbox" />
-                    Declaro, para fins de participação no Chamamento Público Simplificado nº ___/2026 do CMDCA, que possuo plena disponibilidade para o exercício da função de Conselheiro Tutelar suplente, inclusive para cumprimento da jornada de 30 horas semanais, atuação em regime de dedicação exclusiva, participação em plantões, sobreavisos, atendimentos emergenciais, reuniões, capacitações e demais atividades inerentes à função.
+                    Confirmo que tenho disponibilidade para exercer a função de Conselheiro Tutelar suplente, nos termos do procedimento.
                   </label>
                 </div>
 
                 <div class="checkbox-box" style="margin-bottom:12px;">
                   <label>
                     <input id="declaraNovaManifestacao" name="declaraNovaManifestacao" type="checkbox" />
-                    Declaro minha nova manifestação expressa de interesse para integrar o cadastro de suplentes do Conselho Tutelar, de forma livre e voluntária, ciente de que esta participação não configura recondução automática à suplência anterior, sujeitando-me integralmente às regras do procedimento instituído pelo CMDCA.
+                    Confirmo meu interesse em participar deste processo simplificado para recomposição de suplentes.
                   </label>
                 </div>
 
@@ -1070,12 +1055,12 @@
       if (!data.escolaridade) { setFieldError("escolaridade", "Campo obrigatório."); hasError = true; }
 
       if (!data.declaraDisponibilidade) {
-        setGlobalError("Aceite o termo de disponibilidade.");
+        setGlobalError("Confirme sua disponibilidade para a função.");
         hasError = true;
       }
 
       if (!data.declaraNovaManifestacao) {
-        setGlobalError("Aceite a declaração de nova manifestação.");
+        setGlobalError("Confirme seu interesse em participar do processo.");
         hasError = true;
       }
 
@@ -1173,11 +1158,11 @@
         `CPF: ${filesSummary.cpf}`,
         `Comprovante de residência: ${filesSummary.comprovante_residencia}`,
         `Certificado de escolaridade: ${filesSummary.certificado_escolaridade}`,
-        `Certidões negativas: ${filesSummary.certidoes_negativas}`,
+        `Antecedentes criminais: ${filesSummary.certidoes_negativas}`,
         "",
         "DECLARAÇÕES ASSINALADAS",
-        `Termo de disponibilidade: ${formatYesNo(submittedData.declaraDisponibilidade)}`,
-        `Declaração de nova manifestação: ${formatYesNo(submittedData.declaraNovaManifestacao)}`,
+        `Disponibilidade para a função: ${formatYesNo(submittedData.declaraDisponibilidade)}`,
+        `Interesse em participar do processo: ${formatYesNo(submittedData.declaraNovaManifestacao)}`,
         `Ciência do edital: ${formatYesNo(submittedData.declaraCienciaEdital)}`,
         `Consentimento LGPD: ${formatYesNo(submittedData.aceitaLgpd)}`
       ];
