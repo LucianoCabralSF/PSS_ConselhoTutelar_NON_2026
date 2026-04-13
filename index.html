@@ -249,6 +249,43 @@
       flex: 0 0 auto;
     }
 
+    .option-box {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fbfdff;
+    }
+
+    .option-box + .option-box {
+      margin-top: 12px;
+    }
+
+    .option-box label {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .option-box input[type="radio"] {
+      margin-top: 3px;
+      transform: scale(1.1);
+      flex: 0 0 auto;
+    }
+
+    .upload-section.disabled {
+      opacity: 0.58;
+    }
+
+    .upload-section.disabled input[type="file"] {
+      pointer-events: none;
+    }
+
     .upload-card {
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -677,6 +714,12 @@
                   </div>
 
                   <div class="field">
+                    <label for="redeSocial">Instagram ou Facebook</label>
+                    <input id="redeSocial" name="redeSocial" type="text" placeholder="https://instagram.com/... ou https://facebook.com/..." />
+                    <small class="error" data-error-for="redeSocial"></small>
+                  </div>
+
+                  <div class="field">
                     <label for="telefone">Telefone</label>
                     <input id="telefone" name="telefone" type="text" maxlength="15" />
                     <small class="error" data-error-for="telefone"></small>
@@ -694,11 +737,6 @@
                     <small class="error" data-error-for="bairro"></small>
                   </div>
 
-                  <div class="field">
-                    <label for="cep">CEP</label>
-                    <input id="cep" name="cep" type="text" maxlength="9" />
-                    <small class="error" data-error-for="cep"></small>
-                  </div>
                 </div>
               </div>
 
@@ -747,6 +785,23 @@
               </div>
 
               <div class="section">
+                <h3>Entrega de documentos</h3>
+                <div class="option-box">
+                  <label>
+                    <input id="documentOptionUpload" name="documentDeliveryOption" type="radio" value="upload" checked />
+                    Fazer upload dos documentos agora
+                  </label>
+                </div>
+                <div class="option-box">
+                  <label>
+                    <input id="documentOptionPhysical" name="documentDeliveryOption" type="radio" value="physical" />
+                    Me comprometo em entregar as cópias dos documentos fisicamente na Secretaria Executiva do CMDCA até a data limite de inscrição, sob pena de invalidar minha inscrição.
+                  </label>
+                </div>
+                <small class="error" data-error-for="documentDeliveryOption"></small>
+              </div>
+
+              <div class="section">
                 <h3>Documento de antecedentes criminais</h3>
                 <div class="notice warn" style="margin-bottom:0;">
                   Envie em <strong>Antecedentes criminais</strong> o documento comprobatório exigido pelo procedimento, em PDF, JPG ou PNG.
@@ -756,13 +811,23 @@
                 </div>
               </div>
 
-              <div class="section">
+              <div class="section upload-section" id="uploadSection">
                 <div class="split-head">
                   <h3 style="margin:0;">Documentos obrigatórios</h3>
-                  <span class="badge"><span id="selectedFilesCount">0</span>/5 enviados</span>
+                  <span class="badge"><span id="selectedFilesCount">0</span>/6 enviados</span>
                 </div>
 
                 <div class="grid grid-2">
+                  <div class="upload-card">
+                    <div class="field">
+                      <label for="file_selfie">Selfie atual</label>
+                      <input id="file_selfie" type="file" accept=".jpg,.jpeg,.png" capture="user" />
+                      <div class="progress"><div id="progress_selfie"></div></div>
+                      <div class="muted" id="name_selfie"></div>
+                      <small class="error" data-error-for="selfie_file"></small>
+                    </div>
+                  </div>
+
                   <div class="upload-card">
                     <div class="field">
                       <label for="file_rg">Documento de RG</label>
@@ -917,6 +982,7 @@
 
     const state = {
       files: {
+        selfie: null,
         rg: null,
         cpf: null,
         comprovante_residencia: null,
@@ -926,6 +992,7 @@
       existingRegistration: null,
       cpfLookupTimer: null,
       cpfLookupValue: "",
+      documentDeliveryOption: "upload",
       sending: false,
       lastReceipt: null
     };
@@ -943,6 +1010,7 @@
     const submitBtn = el("submitBtn");
     const periodNotice = el("periodNotice");
     const draftNotice = el("draftNotice");
+    const uploadSection = el("uploadSection");
 
     function isPeriodOpen() {
       if (TEST_MODE) return true;
@@ -1008,11 +1076,6 @@
         .replace(/\.(\d{3})(\d)/, ".$1-$2");
     }
 
-    function maskCep(value) {
-      const v = onlyDigits(value).slice(0, 8);
-      return v.replace(/^(\d{5})(\d)/, "$1-$2");
-    }
-
     function maskPhone(value) {
       const v = onlyDigits(value).slice(0, 11);
       if (v.length <= 10) {
@@ -1027,6 +1090,11 @@
 
     function isValidEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
+    }
+
+    function isValidSocialProfile(value) {
+      const normalized = String(value || "").trim().toLowerCase();
+      return normalized.includes("instagram.com/") || normalized.includes("facebook.com/");
     }
 
     function calculateAge(dateString) {
@@ -1046,6 +1114,10 @@
     }
 
     function updateSelectedFilesCount() {
+      if (state.documentDeliveryOption === "physical") {
+        selectedFilesCount.textContent = state.files.selfie ? "1" : "0";
+        return;
+      }
       const total = Object.values(state.files).filter(Boolean).length;
       selectedFilesCount.textContent = String(total);
     }
@@ -1058,6 +1130,9 @@
 
     function validateFile(field, file) {
       if (!file) return "Documento obrigatório.";
+      if (field === "selfie" && !["image/jpeg", "image/png"].includes(file.type)) {
+        return "A selfie deve ser enviada em JPG, JPEG ou PNG.";
+      }
       if (!ACCEPTED_TYPES.includes(file.type)) return "Tipo inválido. Envie PDF, JPG, JPEG ou PNG.";
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) return `Arquivo acima de ${MAX_FILE_SIZE_MB}MB.`;
       return "";
@@ -1104,10 +1179,10 @@
         idadeDeclarada: el("idadeDeclarada").value.trim(),
         estadoCivil: el("estadoCivil").value.trim(),
         email: el("email").value.trim(),
+        redeSocial: el("redeSocial").value.trim(),
         telefone: onlyDigits(el("telefone").value),
         endereco: el("endereco").value.trim(),
         bairro: el("bairro").value.trim(),
-        cep: onlyDigits(el("cep").value),
         escolaridade: el("escolaridade").value,
         participouProcessoAnterior: el("participouProcessoAnterior").checked,
         classificacaoAnterior: el("classificacaoAnterior").value.trim(),
@@ -1116,6 +1191,8 @@
         declaraNovaManifestacao: el("declaraNovaManifestacao").checked,
         declaraCienciaEdital: el("declaraCienciaEdital").checked,
         aceitaLgpd: el("aceitaLgpd").checked,
+        documentDeliveryOption: document.querySelector('input[name="documentDeliveryOption"]:checked')?.value || "upload",
+        entregarDocumentosFisicamente: document.querySelector('input[name="documentDeliveryOption"]:checked')?.value === "physical",
         observacoes: el("observacoes").value.trim(),
         modoTeste: TEST_MODE
       };
@@ -1137,10 +1214,10 @@
       if (!data.idadeDeclarada) { setFieldError("idadeDeclarada", "Campo obrigatório."); hasError = true; }
       if (!data.estadoCivil) { setFieldError("estadoCivil", "Campo obrigatório."); hasError = true; }
       if (!isValidEmail(data.email)) { setFieldError("email", "E-mail inválido."); hasError = true; }
+      if (!isValidSocialProfile(data.redeSocial)) { setFieldError("redeSocial", "Informe um link válido de Instagram ou Facebook."); hasError = true; }
       if (data.telefone.length < 10) { setFieldError("telefone", "Telefone inválido."); hasError = true; }
       if (!data.endereco) { setFieldError("endereco", "Campo obrigatório."); hasError = true; }
       if (!data.bairro) { setFieldError("bairro", "Campo obrigatório."); hasError = true; }
-      if (data.cep.length !== 8) { setFieldError("cep", "CEP inválido."); hasError = true; }
       if (!data.escolaridade) { setFieldError("escolaridade", "Campo obrigatório."); hasError = true; }
 
       if (!data.declaraDisponibilidade) {
@@ -1163,13 +1240,31 @@
         hasError = true;
       }
 
-      const fileKeys = Object.keys(state.files);
-      for (const key of fileKeys) {
-        const validationMessage = validateFile(key, state.files[key]);
-        if (validationMessage) {
-          setFieldError(`${key}_file`, validationMessage);
+      if (!["upload", "physical"].includes(data.documentDeliveryOption)) {
+        setFieldError("documentDeliveryOption", "Escolha como os documentos serão apresentados.");
+        hasError = true;
+      }
+
+      if (data.documentDeliveryOption === "upload") {
+        const fileKeys = Object.keys(state.files);
+        for (const key of fileKeys) {
+          const validationMessage = validateFile(key, state.files[key]);
+          if (validationMessage) {
+            setFieldError(`${key}_file`, validationMessage);
+            hasError = true;
+          }
+        }
+      } else {
+        const selfieValidationMessage = validateFile("selfie", state.files.selfie);
+        if (selfieValidationMessage) {
+          setFieldError("selfie_file", selfieValidationMessage);
           hasError = true;
         }
+        Object.keys(state.files).forEach((key) => {
+          if (key !== "selfie") {
+            setFieldError(`${key}_file`, "");
+          }
+        });
       }
 
       return !hasError;
@@ -1179,6 +1274,7 @@
       const result = [];
       for (const [fieldName, file] of Object.entries(state.files)) {
         if (!file) continue;
+        if (state.documentDeliveryOption === "physical" && fieldName !== "selfie") continue;
         result.push({
           fieldName,
           fileName: file.name,
@@ -1194,7 +1290,18 @@
     }
 
     function getUploadedFileSummary() {
+      if (state.documentDeliveryOption === "physical") {
+        return {
+          selfie: state.files.selfie ? state.files.selfie.name : "-",
+          rg: "Entrega física comprometida",
+          cpf: "Entrega física comprometida",
+          comprovante_residencia: "Entrega física comprometida",
+          certificado_escolaridade: "Entrega física comprometida",
+          certidoes_negativas: "Entrega física comprometida"
+        };
+      }
       return {
+        selfie: state.files.selfie ? state.files.selfie.name : "-",
         rg: state.files.rg ? state.files.rg.name : "-",
         cpf: state.files.cpf ? state.files.cpf.name : "-",
         comprovante_residencia: state.files.comprovante_residencia ? state.files.comprovante_residencia.name : "-",
@@ -1259,17 +1366,20 @@
         `Idade: ${submittedData.idadeDeclarada || "-"}`,
         `Estado civil: ${submittedData.estadoCivil || "-"}`,
         `E-mail: ${submittedData.email || "-"}`,
+        `Rede social: ${submittedData.redeSocial || "-"}`,
         `Telefone: ${maskPhone(submittedData.telefone || "")}`,
         `Endereço: ${submittedData.endereco || "-"}`,
         `Bairro: ${submittedData.bairro || "-"}`,
-        `CEP: ${maskCep(submittedData.cep || "")}`,
         `Escolaridade: ${submittedData.escolaridade || "-"}`,
         `Participou do processo anterior: ${formatYesNo(submittedData.participouProcessoAnterior)}`,
         `Classificação anterior: ${submittedData.classificacaoAnterior || "-"}`,
         `Situação de suplência anterior: ${submittedData.situacaoSuplenciaAnterior || "-"}`,
         `Observações: ${submittedData.observacoes || "-"}`,
         "",
+        `Forma de apresentação dos documentos: ${submittedData.documentDeliveryOption === "physical" ? "ENTREGA FÍSICA NA SECRETARIA EXECUTIVA DO CMDCA" : "UPLOAD NO SISTEMA"}`,
+        "",
         "DOCUMENTOS ANEXADOS",
+        `Selfie: ${filesSummary.selfie}`,
         `RG: ${filesSummary.rg}`,
         `CPF: ${filesSummary.cpf}`,
         `Comprovante de residência: ${filesSummary.comprovante_residencia}`,
@@ -1398,6 +1508,7 @@
       const draft = {
         formData: data,
         cpfLookupValue: state.cpfLookupValue,
+        documentDeliveryOption: state.documentDeliveryOption,
         savedAt: new Date().toISOString()
       };
 
@@ -1424,7 +1535,7 @@
 
         const fieldIds = [
           "nomeCompleto", "cpf", "rg", "dataNascimento", "idadeDeclarada", "estadoCivil",
-          "email", "telefone", "endereco", "bairro", "cep", "escolaridade",
+          "email", "redeSocial", "telefone", "endereco", "bairro", "escolaridade",
           "classificacaoAnterior", "situacaoSuplenciaAnterior", "observacoes"
         ];
 
@@ -1441,6 +1552,12 @@
         el("aceitaLgpd").checked = !!data.aceitaLgpd;
 
         state.cpfLookupValue = draft.cpfLookupValue || "";
+        state.documentDeliveryOption = draft.documentDeliveryOption || data.documentDeliveryOption || "upload";
+        if (state.documentDeliveryOption === "physical") {
+          el("documentOptionPhysical").checked = true;
+        } else {
+          el("documentOptionUpload").checked = true;
+        }
 
         const savedFiles = await getDbValue(`${DRAFT_KEY}_files`);
         if (savedFiles) {
@@ -1452,6 +1569,7 @@
           });
         }
 
+        applyDocumentDeliveryOption();
         setDraftNotice("Rascunho recuperado com sucesso. Você pode continuar sua inscrição.");
       } catch (err) {
         console.error(err);
@@ -1584,16 +1702,34 @@
       }, 450);
     }
 
+    function applyDocumentDeliveryOption() {
+      uploadSection.classList.toggle("disabled", state.documentDeliveryOption === "physical");
+
+      Object.entries(fileMap).forEach(([field, inputId]) => {
+        const input = el(inputId);
+        input.disabled = state.documentDeliveryOption === "physical" && field !== "selfie";
+
+        if (state.documentDeliveryOption === "physical") {
+          setFieldError(`${field}_file`, field === "selfie" ? validateFile("selfie", state.files.selfie) : "");
+        }
+      });
+
+      updateSelectedFilesCount();
+    }
+
     function resetFormVisual() {
       form.reset();
       el("idadeDeclarada").value = "";
       clearErrors();
       hideExistingRegistration();
       state.cpfLookupValue = "";
+      state.documentDeliveryOption = "upload";
+      el("documentOptionUpload").checked = true;
       Object.keys(state.files).forEach((key) => {
         state.files[key] = null;
         updateFileUI(key, null);
       });
+      applyDocumentDeliveryOption();
     }
 
     async function resetForm() {
@@ -1602,6 +1738,7 @@
     }
 
     const fileMap = {
+      selfie: "file_selfie",
       rg: "file_rg",
       cpf: "file_cpf",
       comprovante_residencia: "file_comprovante_residencia",
@@ -1626,18 +1763,13 @@
       await saveDraft(false);
     });
 
-    el("cep").addEventListener("input", async (e) => {
-      e.target.value = maskCep(e.target.value);
-      await saveDraft(false);
-    });
-
     el("dataNascimento").addEventListener("change", async (e) => {
       el("idadeDeclarada").value = calculateAge(e.target.value);
       await saveDraft(false);
     });
 
     [
-      "nomeCompleto","rg","estadoCivil","email","endereco","bairro",
+      "nomeCompleto","rg","estadoCivil","email","redeSocial","endereco","bairro",
       "classificacaoAnterior","observacoes"
     ].forEach((id) => {
       el(id).addEventListener("input", async () => {
@@ -1659,6 +1791,14 @@
       "aceitaLgpd"
     ].forEach((id) => {
       el(id).addEventListener("change", async () => {
+        await saveDraft(false);
+      });
+    });
+
+    ["documentOptionUpload", "documentOptionPhysical"].forEach((id) => {
+      el(id).addEventListener("change", async (event) => {
+        state.documentDeliveryOption = event.target.value;
+        applyDocumentDeliveryOption();
         await saveDraft(false);
       });
     });
@@ -1701,12 +1841,18 @@
         const file = event.target.files?.[0] || null;
         state.files[field] = file;
         updateFileUI(field, file);
-        setFieldError(`${field}_file`, file ? validateFile(field, file) : "Documento obrigatório.");
+        setFieldError(
+          `${field}_file`,
+          state.documentDeliveryOption === "upload"
+            ? (file ? validateFile(field, file) : "Documento obrigatório.")
+            : ""
+        );
         await saveDraft(false);
       });
     });
 
     applyPeriodState();
+    applyDocumentDeliveryOption();
     updateSelectedFilesCount();
     loadDraft();
   </script>
